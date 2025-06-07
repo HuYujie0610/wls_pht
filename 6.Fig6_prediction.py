@@ -149,12 +149,11 @@ for k,trait in tqdm(enumerate(tlist)):
     bootstrapping(trait,200)
     drawpic(trait)
     ax1.set_title(str(traitname[k]),rotation=0,fontsize=26,pad=12)
-
-    if trait == 'C':  yplotinfo = [4,16,4]
+    if trait == 'C':  yplotinfo = [0,12,3]
     if trait == 'g1': yplotinfo = [2,10,2]  
-    if trait == 'gpmax': yplotinfo = [2,8,2]
-    if trait == 'P50x':  yplotinfo = [0,5,1]
-    if trait == 'P50s': yplotinfo = [0,1.2,0.4]
+    if trait == 'gpmax': yplotinfo = [0,9,3]
+    if trait == 'P50x':  yplotinfo = [0,6,2]
+    if trait == 'P50s': yplotinfo = [0,2,0.5]
 
     ylim_down,ylim_up,delta_y = yplotinfo
     if trait == 'C':  R2plotinfo = [2019,ylim_down]

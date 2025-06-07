@@ -12,7 +12,7 @@ inpath = './input/'
 outpath = './output/'
 
 runlist = ['NF_ALL_25','NF_WET_25','NF_DRY_25','PF_ALL_25','PF_WET_25','PF_DRY_25']
-
+percentage = 40
 grid=runlist[0][-2:]
 
 def Standardized(Data):
@@ -55,10 +55,6 @@ tlist_05=['C_05','g1_05','gpmax_05','P50x_05','P50s_05']
 tlist_95=['C_95','g1_95','gpmax_95','P50x_95','P50s_95']
 tlist = tlist_05 +tlist_50+tlist_95
 
-datatmp = pd.read_csv(inpath + 'forcing'+grid+'.csv')
-data = datatmp.dropna(subset=plist+tlist+['PT'])
-print(len(data))
-
 Modellist = []
 for count1 in range(1,len(envlist)+1):
     for count2 in range(1,len(biolist)+1):
@@ -71,7 +67,7 @@ selectresult = pd.DataFrame()
 for i,tree in enumerate(['NF','PF']):
     datatmp = pd.read_csv(inpath + 'forcing'+grid+'.csv')
     datatmp=datatmp[datatmp['PT']==tree]
-    dataTMP = datatmp.dropna(subset=plist+tlist+['PT'])
+    dataTMP = datatmp.dropna(subset=plist+tlist+['PT'])[datatmp['PT_'+tree+'%']>=percentage]
     for trait in tlist_50:
         for i,modeltmp in enumerate(Modellist):
             tmp,_=wlssim(dataTMP,modeltmp,trait)
@@ -90,6 +86,8 @@ for i,MODE in enumerate(runlist):
     result= pd.DataFrame()
     tree = MODE[0:2]
     wetdry = MODE[3:6]
+    datatmp = pd.read_csv(inpath + 'forcing'+grid+'.csv')
+    data = datatmp.dropna(subset=plist+tlist+[pt])[datatmp['PT_'+tree+'%']>=percentage]
 
     if wetdry == 'ALL':forcing = data[data[pt]==tree] 
     else:forcing = data[(data[pt]==tree)&(data[AIindex]==wetdry)]

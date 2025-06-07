@@ -49,34 +49,36 @@ def wlssim(data,model,trait):
 tmp = pd.read_csv(inpath + 'forcing'+grid+'.csv').dropna(subset=plist+tlist+['PT'])
 dfcmip=pd.concat([pd.read_csv(filelist).assign(Year=yearlist[i]) for i,filelist in tqdm(enumerate(sorted(glob.glob(cmippath +'*.csv'))))])
 
-for runindex in range(len(runlist)):
-    result= pd.DataFrame()
-    MODE=runlist[runindex]
-    tree=MODE[0:2]
+for percentage in [35,40,45]:
+    for runindex in range(len(runlist)):
+        result= pd.DataFrame()
+        MODE=runlist[runindex]
+        tree=MODE[0:2]
 
-    MODEinfo = pd.read_csv(outpath +'/Modelresult_'+MODE+'.csv').set_index('Trait')
-    print(MODEinfo)
+        MODEinfo = pd.read_csv(outpath +'/Modelresult_'+MODE+'.csv').set_index('Trait')
+        print(MODEinfo)
 
-    Traitmean = pd.DataFrame(columns=['Year','C','g1','gpmax','P50x','P50s'])
-    Traitmean['Year'] = range(startyear,stopyear+1)
-    Traitmean = Traitmean.set_index('Year')
+        Traitmean = pd.DataFrame(columns=['Year','C','g1','gpmax','P50x','P50s'])
+        Traitmean['Year'] = range(startyear,stopyear+1)
+        Traitmean = Traitmean.set_index('Year')
 
-    data = tmp[tmp['PT']==tree]
+        data = tmp[tmp['PT']==tree][tmp['PT_'+tree+'%']>=percentage]
 
-    for trait in tqdm(tlist_50):
-        model= list(MODEinfo['Model'][trait].split("', '"))
-        model[0] = model[0].strip("['");model[-1] = model[-1].strip("']")
+        for trait in tqdm(tlist_50):
+            model= list(MODEinfo['Model'][trait].split("', '"))
+            model[0] = model[0].strip("['");model[-1] = model[-1].strip("']")
 
-        MODELtmp,WLS = wlssim(data,model,trait)
-        result = pd.concat([result,MODELtmp])
+            MODELtmp,WLS = wlssim(data,model,trait)
+            result = pd.concat([result,MODELtmp])
 
-        predictlist = list(set(model) & set(cmiplist))
-        restlist = list(set(model) - set(cmiplist))
-        df_predict = dfcmip[['lat', 'lon','Year'] + predictlist]
-        df_same = data[['lat', 'lon'] + restlist]
-        df_year = pd.merge(df_same,df_predict,on=['lat','lon'],how='inner').set_index(['lat', 'lon','Year']).dropna()
+            predictlist = list(set(model) & set(cmiplist))
+            restlist = list(set(model) - set(cmiplist))
+            df_predict = dfcmip[['lat', 'lon','Year'] + predictlist]
+            df_same = data[['lat', 'lon'] + restlist]
+            df_year = pd.merge(df_same,df_predict,on=['lat','lon'],how='inner').set_index(['lat', 'lon','Year']).dropna()
 
-        WLS_output = WLS.predict(sm.add_constant(df_year[model])).reset_index().groupby('Year').mean().drop(columns=['lat','lon']).values
-        Traitmean[trait] = WLS_output[startyear-stopyear-1:]
-        
-    Traitmean.to_csv(outpath +'/Predictresult_'+runlist[runindex]+'.csv')
+            WLS_output = WLS.predict(sm.add_constant(df_year[model])).reset_index().groupby('Year').mean().drop(columns=['lat','lon']).values
+            Traitmean[trait] = WLS_output[startyear-stopyear-1:]
+            
+        if percentage == 40: Traitmean.to_csv(outpath +'Predictresult_'+runlist[runindex]+'.csv')
+        else:Traitmean.to_csv(outpath +str(percentage) +'/Predictresult_'+runlist[runindex]+'.csv')

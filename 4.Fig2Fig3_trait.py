@@ -16,28 +16,28 @@ y_order_list = ['SH','NF','PF']
 inpath = './input/'
 outpath = './Figure/'
 Sitedata = inpath + 'Table S1.xlsx'
-sheetname = ['All Sites','Comparison Sites']
+sheetname = ['MCS','SCS']
 
 data = pd.read_excel(Sitedata,sheet_name=sheetname[0])
-data = data[['ID','OldID','Group','Species','Lat','Lon','PFT','P50','Ks']]
+data = data[['ID','OldID','Group','Species','Lat','Lon','TC','P50','Ks']]
 
 data['P50'] = -1*data['P50']
-data.loc[data['PFT']=='NFA','PFT']='NF'
-data.loc[data['PFT']=='NFG','PFT']='NF'
-data.loc[data['PFT']=='PFA','PFT']='PF'
-data.loc[data['PFT']=='PFG','PFT']='PF'
+data.loc[data['TC']=='NFA','TC']='NF'
+data.loc[data['TC']=='NFG','TC']='NF'
+data.loc[data['TC']=='PFA','TC']='PF'
+data.loc[data['TC']=='PFG','TC']='PF'
 
 #Fig 2
 
 fig = plt.figure(figsize = [15,6], dpi = 300)
 
-datatmp = data[['PFT','P50']].dropna()
+datatmp = data[['TC','P50']].dropna()
 ax1 = plt.subplot(121)
-ax1 = sns.violinplot(y=datatmp['PFT'],x=datatmp['P50'],palette=colorlist[1:],width=0.6,inner=None,
+ax1 = sns.violinplot(y=datatmp['TC'],x=datatmp['P50'],palette=colorlist[1:],width=0.6,inner=None,
     linewidth=0,orient ='h',order=y_order_list,zorder=1)
-ax1 = sns.boxplot(y=datatmp['PFT'],x=datatmp['P50'],palette=colorlist[1:],width=0.15,linecolor='black',showcaps=False,
+ax1 = sns.boxplot(y=datatmp['TC'],x=datatmp['P50'],palette=colorlist[1:],width=0.15,linecolor='black',showcaps=False,
     linewidth=1.5,fliersize=4,orient ='h',order=y_order_list,zorder=10)
-data_experiment = data[['PFT','P50']][-7:].dropna()
+data_experiment = data[['TC','P50']][-7:].dropna()
 
 ax1.set(xlim=(-1.5,8),xticks=[0,2,4,6,8],xticklabels=['0.0','2.0','4.0','6.0','8.0'])
 plt.xlabel(r'$\mathregular{P50_x}$ $\mathregular{(-MPa)}$',fontsize = 20)
@@ -46,13 +46,13 @@ plt.yticks(font='Times New Roman',rotation=0,fontsize = 20)
 plt.xticks(font='Times New Roman',fontsize = 15)
 ax1.text(7.05,-0.2,f'a'+')',fontsize=20,fontdict=font_normal,weight='bold')
 
-datatmp = data[['PFT','Ks']].dropna()
+datatmp = data[['TC','Ks']].dropna()
 ax2 = plt.subplot(122)
-ax2=sns.violinplot(y=datatmp['PFT'],x=datatmp['Ks'],palette=colorlist[1:],width=0.6,inner=None,
+ax2=sns.violinplot(y=datatmp['TC'],x=datatmp['Ks'],palette=colorlist[1:],width=0.6,inner=None,
     linewidth=0,orient ='h',order=y_order_list)
-ax2=sns.boxplot(y=datatmp['PFT'],x=datatmp['Ks'],palette=colorlist[1:],width=0.15,linecolor='black',showcaps=False,
+ax2=sns.boxplot(y=datatmp['TC'],x=datatmp['Ks'],palette=colorlist[1:],width=0.15,linecolor='black',showcaps=False,
     linewidth=1.5,fliersize=4,orient ='h',order=y_order_list)
-data_experiment = data[['PFT','Ks']][-7:].dropna()
+data_experiment = data[['TC','Ks']][-7:].dropna()
 
 
 ax2.set(xlim=(-3,20),xticks=[0,5,10,15,20],xticklabels=['0.0','5.0','10.0','15.0','20.0'])
@@ -96,10 +96,10 @@ def text_pic(xlim_down,xlim_up,ylim_down,ylim_up,picnum,title,R2x=-9,R2y=-9):
     ax1.text(picnum_x_position,picnum_y_position,picnum+')',fontsize=16,fontdict=font_normal,weight='bold')
     return
 
-data = data.dropna(axis=0,subset=['ID','PFT','P50','Ks'])
-SB=data[data.PFT=='SH']
-NF=data[data.PFT=='NF']
-PF=data[data.PFT=='PF']
+data = data.dropna(axis=0,subset=['ID','TC','P50','Ks'])
+SB=data[data.TC=='SH']
+NF=data[data.TC=='NF']
+PF=data[data.TC=='PF']
 
 fig=plt.figure(figsize=(13,8))
 x2,y2,k,r2,pv=sim(data)
@@ -132,13 +132,13 @@ text_pic(-1,1,-1,1.5,'d','SH (Across Sites)',-0.6,-0.4)
 
 dataS = pd.read_excel(Sitedata,sheet_name=sheetname[1])
 dataS = dataS.sort_values(by=['Species'],axis=0)
-dataS['PFT'].replace({'PFA':'PF (Within Sites)','PFG':'PF (Within Sites)','NFA':'NF (Within Sites)','NFG':'NF (Within Sites)'},inplace=True)
+dataS['TC'].replace({'PFA':'PF (Within Sites)','PFG':'PF (Within Sites)','NFA':'NF (Within Sites)','NFG':'NF (Within Sites)'},inplace=True)
 dataS['P50'] *= -1
 
-data = dataS.dropna(axis=0,subset=['PFT','P50','Ks'])
+data = dataS.dropna(axis=0,subset=['TC','P50','Ks'])
 data = data.dropna(axis=0,subset='ID')
-NF=data[data.PFT=='NF (Within Sites)']
-PF=data[data.PFT=='PF (Within Sites)']
+NF=data[data.TC=='NF (Within Sites)']
+PF=data[data.TC=='PF (Within Sites)']
 
 x2,y2,k,r2,pv=sim(NF);print('e. NF (Within Sites):','k:',k.round(2),'r2:',r2.round(2),'p:',pv.round(2))
 ax1 = plt.subplot(235)
