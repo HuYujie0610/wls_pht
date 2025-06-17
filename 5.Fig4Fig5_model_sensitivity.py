@@ -24,17 +24,14 @@ runlist = ['NF_ALL_25','NF_WET_25','NF_DRY_25','PF_ALL_25','PF_WET_25','PF_DRY_2
 inpath = './output/'
 outpath = './Figure/'
 
-envlist= ['TEMP','RNET','VPD','Psum','Psurf','PET','AI','Ms','Ga']
+envlist= ['RNET','VPD','Psum','Psurf','Ms','Ga']
 biolist=['RD','LAI','VOD','Age','Hc']
 plist = envlist+biolist
 
-plistname=[ r'$\mathregular{T_a}$',
-            r'$\mathregular{R_n}$',
+plistname=[ r'$\mathregular{R_n}$',
             r'$\mathregular{VPD}$',
             r'$\mathregular{P_r}$',
             r'$\mathregular{P_s}$',
-            r'$\mathregular{PET}$',
-            r'$\mathregular{DI}$',
             r'$\mathregular{M_s}$',
             r'$\mathregular{G_a}$',
             r'$\mathregular{D_r}$',
@@ -217,11 +214,11 @@ for trait in tlist:
     pvalue_ax1 = xr.merge([pvalue_ax1,df_tmp])
 data_ax1=data_ax1.to_dataframe().reindex(index=['const']+plist)
 pvalue_ax1 = pvalue_ax1.to_dataframe().reindex(index=['const']+plist)
-heatmap_data_ax1 = data_ax1[1:15].values.T
-heatmap_pvalue_ax1 = pvalue_ax1[1:15].values.T
+heatmap_data_ax1 = data_ax1[1:].values.T
+heatmap_pvalue_ax1 = pvalue_ax1[1:].values.T
 ax1 = sns.heatmap(heatmap_data_ax1,annot = True,fmt='.2f',square = True,annot_kws={'size':10,'family':'Times New Roman'},
-    cbar=True,cmap = 'RdGy_r',vmin=-1, vmax=1.5,center=0,cbar_kws={'pad':0.015,'ticks':[-1,-0.5,0,0.5,1,1.5],'format': '%.2f'})
-pvalue_plot(ax1,heatmap_data_ax1,heatmap_pvalue_ax1,0.65)
+    cbar=True,cmap = 'RdGy_r',vmin=-0.6, vmax=0.6,center=0,cbar_kws={'pad':0.015,'ticks':[-0.6,-0.3,0,0.3,0.6],'format': '%.2f'})
+pvalue_plot(ax1,heatmap_data_ax1,heatmap_pvalue_ax1,0.268)
 ax1.set(xlabel='',xticklabels='') 
 ax1.set(ylabel='',yticklabels=traitname)
 plt.yticks(font='Times New Roman',rotation=0,fontsize = tick_label_size)
@@ -244,11 +241,11 @@ for trait in tlist:
     pvalue_ax3 = xr.merge([pvalue_ax3,df_tmp])
 data_ax3=data_ax3.to_dataframe().reindex(index=['const']+plist)
 pvalue_ax3 = pvalue_ax3.to_dataframe().reindex(index=['const']+plist)
-heatmap_data_ax3 = data_ax3[1:15].values.T
-heatmap_pvalue_ax3 = pvalue_ax3[1:15].values.T
+heatmap_data_ax3 = data_ax3[1:].values.T
+heatmap_pvalue_ax3 = pvalue_ax3[1:].values.T
 ax3 = sns.heatmap(heatmap_data_ax3,annot = True,fmt='.2f',square = True,annot_kws={'size':10,'family':'Times New Roman'},
-    cbar=True,cmap = 'RdGy_r',vmin=-1, vmax=1.5,center=0,cbar_kws={'pad':0.015,'ticks':[-1,-0.5,0,0.5,1,1.5],'format': '%.2f'})
-pvalue_plot(ax3,heatmap_data_ax3,heatmap_pvalue_ax3,0.65)
+    cbar=True,cmap = 'RdGy_r',vmin=-0.6, vmax=0.6,center=0,cbar_kws={'pad':0.015,'ticks':[-0.6,-0.3,0,0.3,0.6],'format': '%.2f'})
+pvalue_plot(ax1,heatmap_data_ax1,heatmap_pvalue_ax1,0.268)
 ax3.set(xlabel='',xticklabels=plistname)
 ax3.set(ylabel='',yticklabels=traitname)
 plt.yticks(font='Times New Roman',rotation=0,fontsize = tick_label_size)
@@ -281,7 +278,7 @@ ax3.axvline(8.5,            ymin=-0.7/len(tlist),ymax=-0.6/len(tlist),color='bla
 ax3.axvline(9.5,            ymin=-0.7/len(tlist),ymax=-0.6/len(tlist),color='black',linewidth=0.7,clip_on=False)
 ax3.axvline(len(plist)-0.5, ymin=-0.7/len(tlist),ymax=-0.6/len(tlist),color='black',linewidth=0.7,clip_on=False)
 ax3.text(4.1,                  6.1,'ENV',fontsize=tick_label_size,fontdict=font_normal)
-ax3.text((len(plist)+9)/2-0.4, 6.1,'BIO',fontsize=tick_label_size,fontdict=font_normal)
+ax3.text((len(plist)+9)/2-0.4, 6.1,'ECO',fontsize=tick_label_size,fontdict=font_normal)
 
 plt.subplots_adjust(hspace=0.12)
 fig.savefig(outpath + 'Figure 5.jpg',dpi=300,bbox_inches = 'tight')

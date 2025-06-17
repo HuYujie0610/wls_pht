@@ -16,10 +16,10 @@ y_order_list = ['SH','NF','PF']
 inpath = './input/'
 outpath = './Figure/'
 Sitedata = inpath + 'Table S1.xlsx'
-sheetname = ['MCS','SCS']
+sheetname = ['CSC sites','WSC sites']
 
 data = pd.read_excel(Sitedata,sheet_name=sheetname[0])
-data = data[['ID','OldID','Group','Species','Lat','Lon','TC','P50','Ks']]
+data = data[['ID','Group','Species','Lat','Lon','TC','P50','Ks']]
 
 data['P50'] = -1*data['P50']
 data.loc[data['TC']=='NFA','TC']='NF'
@@ -114,45 +114,45 @@ ax1 = plt.subplot(232)
 sns.regplot(x=x2,y=y2,ci=95,color=colorlist[2],scatter_kws={'s':14})
 ax1.set(xlim=(-1.2,1),xticks=[-1,-0.5,0,0.5,1],xticklabels=['-1.0','-0.5','0.0','0.5','1.0'],
     ylim=(-1.5,1.5),yticks=[-1.5,-1,-0.5,0,0.5,1,1.5],yticklabels=['-1.5','-1.0','-0.5','0.0','0.5','1.0','1.5'])
-text_pic(-1.2,1,-1.5,1.5,'b','NF (Across Sites)',-1,-1)
+text_pic(-1.2,1,-1.5,1.5,'b','NF (Cross-species)',-1,-1)
 
 x3,y3,k,r2,pv=sim(PF)
 ax1 = plt.subplot(233)
 sns.regplot(x=x3,y=y3,ci=95,color=colorlist[3],scatter_kws={'s':14})
 ax1.set(xlim=(-1,1),xticks=[-1,-0.5,0,0.5,1],xticklabels=['-1.0','-0.5','0.0','0.5','1.0'],
   ylim=(-1.5,1.5),yticks=[-1.5,-1,-0.5,0,0.5,1,1.5],yticklabels=['-1.5','-1.0','-0.5','0.0','0.5','1.0','1.5'])
-text_pic(-1,1,-1.5,1.5,'c','PF (Across Sites)',-0.9,1)
+text_pic(-1,1,-1.5,1.5,'c','PF (Cross-species)',-0.9,1)
 
 x1,y1,k,r2,pv=sim(SB)
 ax1 = plt.subplot(234)
 sns.regplot(x=x1,y=y1,ci=95,color=colorlist[1],scatter_kws={'s':14})
 ax1.set(xlim=(-1,1),xticks=[-1,-0.5,0,0.5,1],xticklabels=['-1.0','-0.5','0.0','0.5','1.0'],
     ylim=(-1,1.5),yticks=[-1,-0.5,0,0.5,1,1.5],yticklabels=['-1.0','-0.5','0.0','0.5','1.0','1.5'])
-text_pic(-1,1,-1,1.5,'d','SH (Across Sites)',-0.6,-0.4)
+text_pic(-1,1,-1,1.5,'d','SH (Cross-species)',-0.6,-0.4)
 
 dataS = pd.read_excel(Sitedata,sheet_name=sheetname[1])
 dataS = dataS.sort_values(by=['Species'],axis=0)
-dataS['TC'].replace({'PFA':'PF (Within Sites)','PFG':'PF (Within Sites)','NFA':'NF (Within Sites)','NFG':'NF (Within Sites)'},inplace=True)
+dataS['TC'].replace({'PFA':'PF (Within-species)','PFG':'PF (Within-species)','NFA':'NF (Within-species)','NFG':'NF (Within-species)'},inplace=True)
 dataS['P50'] *= -1
 
 data = dataS.dropna(axis=0,subset=['TC','P50','Ks'])
 data = data.dropna(axis=0,subset='ID')
-NF=data[data.TC=='NF (Within Sites)']
-PF=data[data.TC=='PF (Within Sites)']
+NF=data[data.TC=='NF (Within-species)']
+PF=data[data.TC=='PF (Within-species)']
 
-x2,y2,k,r2,pv=sim(NF);print('e. NF (Within Sites):','k:',k.round(2),'r2:',r2.round(2),'p:',pv.round(2))
+x2,y2,k,r2,pv=sim(NF);print('e. NF (Within-species):','k:',k.round(2),'r2:',r2.round(2),'p:',pv.round(2))
 ax1 = plt.subplot(235)
 sns.regplot(x=x2,y=y2,ci=95,color=colorlist[2],scatter_kws={'s':14})
 ax1.set(xlim=(-1.2,0.7),xticks=[-1.0,-0.5,0,0.5],xticklabels=['-1.0','-0.5','0.0','0.5'],
     ylim=(-1,1),yticks=[-1,-0.5,0,0.5,1],yticklabels=['-1.0','-0.5','0.0','0.5','1.0'])
-text_pic(-1.2,1,-1,1,'e','NF (Within Sites)',-1,-0.5)
+text_pic(-1.2,1,-1,1,'e','NF (Within-species)',-1,-0.5)
 
-x3,y3,k,r2,pv=sim(PF);print('f. PF (Within Sites):','k:',k.round(2),' r2:',r2.round(2),'p:',pv.round(2))
+x3,y3,k,r2,pv=sim(PF);print('f. PF (Within-species):','k:',k.round(2),' r2:',r2.round(2),'p:',pv.round(2))
 ax1 = plt.subplot(236)
 sns.regplot(x=x3,y=y3,ci=95,color=colorlist[3],scatter_kws={'s':14})
 ax1.set(xlim=(-1,1),xticks=[-1,-0.5,0,0.5,1],xticklabels=['-1.0','-0.5','0.0','0.5','1.0'],
   ylim=(-2,1),yticks=[-2,-1,0,1],yticklabels=['-2.0','-1.0','0.0','1.0'])
-text_pic(-1,1,-2,1,'f','PF (Within Sites)',-0.75,0)
+text_pic(-1,1,-2,1,'f','PF (Within-species)',-0.75,0)
 
 plt.subplots_adjust(wspace =0.3,hspace=0.36)
 fig.savefig(outpath + 'Figure 3.jpg',dpi=300,bbox_inches='tight')
